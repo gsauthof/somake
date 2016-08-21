@@ -922,9 +922,18 @@ read_command_options(register int argc, register char **argv)
 	extern char		*optarg;
 	extern int		optind, opterr, optopt;
 
+// Apparently, the semantics of a leading '-' in the optstring differ
+// between Solaris and GNU libc.
+// Also, the '+' is probably a good idea for GNU libc to avoid
+// reording of arguments.
+#if defined(sun) || defined(__sun)
 #define SUNPRO_CMD_OPTS	"-~Bbc:Ddef:g:ij:K:kM:m:NnO:o:PpqRrSsTtuVvwx:"
+#define SVR4_CMD_OPTS   "-c:ef:g:ij:km:nO:o:pqrsTtVv"
+#else
+#define SUNPRO_CMD_OPTS	"+~Bbc:Ddef:g:ij:K:kM:m:NnO:o:PpqRrSsTtuVvwx:"
+#define SVR4_CMD_OPTS   "+c:ef:g:ij:km:nO:o:pqrsTtVv"
+#endif
 
-#	define SVR4_CMD_OPTS   "-c:ef:g:ij:km:nO:o:pqrsTtVv"
 
 	/*
 	 * Added V in SVR4_CMD_OPTS also, which is going to be a hidden
