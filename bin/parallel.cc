@@ -46,8 +46,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <semaphore.h>
+
 #include <libintl.h>
 
+#include <comp/namelen.h>
 
 
 /*
@@ -252,7 +255,12 @@ execute_parallel(Property line, Boolean waitflg, Boolean local)
 #include <sys/ipc.h>		/* ftok() */
 #include <sys/shm.h>		/* shmget(), shmat(), shmdt(), shmctl() */
 #include <semaphore.h>		/* sem_init(), sem_trywait(), sem_post(), sem_destroy() */
+#if defined(sun) || defined(__sun)
 #include <sys/loadavg.h>	/* getloadavg() */
+#else
+#include <stdlib.h> // getloadavg()
+#define LOADAVG_1MIN 0
+#endif
 
 /*
  *	adjust_pmake_max_jobs (int pmake_max_jobs)

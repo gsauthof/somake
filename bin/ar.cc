@@ -46,6 +46,7 @@
 #include <libintl.h>
 #include <mk/defs.h>
 #include <mksh/misc.h>		/* retmem_mb() */
+#include <ctype.h>
 
 struct ranlib {
 	union {

@@ -43,13 +43,18 @@
 #include <poll.h>
 #include <libintl.h>
 #include <signal.h>
+#if defined(sun) || defined(__sun)
+// XXX really needed, even on Solaris?
 #include <stropts.h>
+#else
+#endif
 #include <sys/errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/utsname.h>	/* uname() */
 #include <sys/wait.h>
 #include <unistd.h>		/* close() */
+#include <comp/namelen.h>
 
 /*
  * Defined macros

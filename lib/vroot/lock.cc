@@ -36,10 +36,12 @@
 #include <errno.h>			/* errno */
 #include <libintl.h>
 
+#if defined(sun) || defined(__sun)
 extern	char		*sys_errlist[];
 extern	int		sys_nerr;
+#endif
 
-static	void		file_lock_error(char *msg, char *file, char *str, int arg1, int arg2);
+static	void		file_lock_error(char *msg, char *file, char *str, const char *arg1, const char *arg2);
 
 #define BLOCK_INTERUPTS sigfillset(&newset) ; \
 	sigprocmask(SIG_SETMASK, &newset, &oldset)
@@ -109,7 +111,7 @@ file_lock(char *name, char *lockname, int *file_locked, int timeout)
 
 		if (errno != EEXIST) {
 			file_lock_error(msg, name, (char *)"symlink(%s, %s)",
-			    (int) name, (int) lockname);
+			    name, lockname);
 			fprintf(stderr, "%s", msg);
 			return errno;
 		}
@@ -157,7 +159,7 @@ file_lock(char *name, char *lockname, int *file_locked, int timeout)
  * Format a message telling why the lock could not be created.
  */
 static	void
-file_lock_error(char *msg, char *file, char *str, int arg1, int arg2)
+file_lock_error(char *msg, char *file, char *str, const char *arg1, const char *arg2)
 {
 	int		len;
 

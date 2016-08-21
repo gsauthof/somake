@@ -36,6 +36,9 @@
 #include <errno.h>		/* errno */
 
 #include <wctype.h>
+#include <wchar.h>
+
+#include <comp/timestruc_t.h>
 
 /*
  * A type and some utilities for boolean values
@@ -861,7 +864,12 @@ extern Boolean		do_not_exec_rule;		/* `-n' */
 extern Boolean		dollarget_seen;
 extern Boolean		dollarless_flag;
 extern Name		dollarless_value;
+// On Linux, environ is declared with C linkage in unistd.h
+// if _GNU_SOURCE is defined. Declaring it with C linkage here
+// should also be fine under Solaris.
+extern "C" {
 extern char		**environ;
+}
 extern Envvar		envvar;
 extern int		exit_status;
 extern wchar_t		*file_being_read;

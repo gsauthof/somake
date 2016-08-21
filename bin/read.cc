@@ -43,6 +43,7 @@
 #include <unistd.h>		/* read(), unlink() */
 #include <libintl.h>
 
+#include <comp/progname.h>
 
 /*
  * typedefs & structs

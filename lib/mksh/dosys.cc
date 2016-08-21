@@ -93,7 +93,13 @@ redirect_io(char *stdout_file, char *stderr_file)
 {
 	int	i;
 
+#if defined(sun) || defined(__sun)
 	(void) closefrom(3);
+#else
+        // XXX not available on Linux
+        // if necessary, could provide a compatibility function that
+        // iterates over /proc/$(getpid())/fd ...
+#endif
 	if ((i = my_open(stdout_file,
 	         O_WRONLY | O_CREAT | O_TRUNC | O_DSYNC,
 	         S_IREAD | S_IWRITE)) < 0) {

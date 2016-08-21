@@ -39,6 +39,11 @@
 #include <errno.h>		/* errno    */
 #include <locale.h>		/* MB_CUR_MAX    */
 
+#if defined(sun) || defined(__sun)
+#else
+#include <libintl.h> // gettext()
+#endif
+
 /*
  * Defined macros
  */

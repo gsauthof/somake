@@ -294,7 +294,11 @@ extern	long int	hostid;
  * Declarations of system defined variables
  */
 /* On linux this variable is defined in 'signal.h' */
+#if defined(sun) || defined(__sun)
 extern	char		*sys_siglist[];
+#else
+#include <signal.h>
+#endif
 
 /*
  * Declarations of system supplied functions
@@ -353,7 +357,9 @@ extern	wchar_t		*getmem_wc(register int size);
 #ifdef __cplusplus
 extern "C" {
 #endif
+#if defined(sun) || defined(__sun)
 extern	char		*getwd(char *);
+#endif
 #ifdef __cplusplus
 }
 #endif

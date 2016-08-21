@@ -39,6 +39,8 @@
 #include <stdarg.h>		/* va_list, va_start(), va_end() */
 #include <libintl.h>
 
+#include <comp/progname.h>
+
 /*
  * Defined macros
  */
