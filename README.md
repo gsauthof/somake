@@ -33,6 +33,154 @@ Or to use Ninja instead of GNU Make:
     cmake ../somake -DCMAKE_BUILD_TYPE=Release -G Ninja
     ninja-build
 
+## Examples
+
+The following assumes that the repository was cloned to the
+directory `somake` and that `somake-build` is the build
+directory.
+
+Copy the example files and the basic rule file for testing:
+
+    $ cd ../somake-build
+    $ cp -r ../somake/example/ .
+    $ cp ../somake/bin/make.rules.file example/make.rules
+    $ cd example
+    $ ln -s ../somake
+
+Compile the hello world program:
+
+    $ ./somake -m serial helloworld
+    cc    -o helloworld helloworld.c
+
+Verify that make detects that no rebuild is necessary:
+
+    $ ./somake -m serial helloworld
+    `helloworld' is up to date.
+
+Test command dependencies:
+
+    $ ./somake -m serial helloworld CC=gcc
+    gcc    -o helloworld helloworld.c
+
+Also works for other variables:
+
+    $ ./somake -m serial helloworld CC=gcc CFLAGS=-Wall
+    gcc -Wall   -o helloworld helloworld.c
+
+Test hidden dependency checks:
+
+    $ ./somake -m serial hello
+    cc   -c  hello.c
+    cc   -c  world.c
+    cc  hello.o world.o -o hello
+    $ ./somake -m serial hello
+    `hello' is up to date.
+    $ touch world.h
+    $ ./somake -m serial hello
+    cc   -c  hello.c
+    cc   -c  world.c
+    cc  hello.o world.o -o hello
+    $ ./somake -m serial hello
+    `hello' is up to date.
+    $ touch world.h
+    $ ./somake -m serial world.o
+    cc   -c  world.c
+    $ ./somake -m serial hello
+    cc   -c  hello.c
+    cc  hello.o world.o -o hello
+
+Note that command and hidden dependencies are enabled by declaring the
+`.KEEP_STATE:` pseudo target.
+
+Test target groups:
+
+    $ ./somake -m serial main_foo
+    ./gen_foo.sh
+    cc   -c  main_foo.c
+    cc   -c  foo.c
+    cc  foo.h main_foo.o foo.o -o main_foo
+
+Now remove the `+` in the generating rule
+
+    foo.c + foo.h: gen_foo.sh
+	    ./gen_foo.sh
+
+and run again:
+
+    $ ./somake -m serial clean
+    $ rm .make.state
+    $ ./somake -m serial main_foo
+    ./gen_foo.sh
+    cc   -c  main_foo.c
+    ./gen_foo.sh
+    cc   -c  foo.c
+    cc  foo.h main_foo.o foo.o -o main_foo
+
+Note that the `./gen_foo.sh` action is now executed twice because the rule
+
+    foo.c foo.h: gen_foo.sh
+	    ./gen_foo.sh
+
+is equivalent to two separate rules:
+
+    foo.c: gen_foo.sh
+	    ./gen_foo.sh
+
+    foo.h: gen_foo.sh
+	    ./gen_foo.sh
+
+This is how classic make behaves - also GNU make - although in
+this toy example it is harder to trigger - because in sequential
+execution GNU make uses a advantageous timestamp comparison
+strategy:
+
+    $ make main_foo
+    ./gen_foo.sh
+    cc    -c -o main_foo.o main_foo.c
+    cc    -c -o foo.o foo.c
+    cc  main_foo.o foo.o -o main_foo
+
+But a parallel execution will do:
+
+    $ make -j3 main_foo
+    ./gen_foo.sh
+    ./gen_foo.sh
+    cc    -c -o main_foo.o main_foo.c
+    cc    -c -o foo.o foo.c
+    cc  main_foo.o foo.o -o main_foo
+
+Note that GNU make supports target groups with pattern rules, though:
+
+    $ make -j3 both
+    echo x > foo.bar
+    sed 's/x/y/' foo.bar > foo.one
+    sed 's/x/z/' foo.bar > foo.two
+
+With Sun make the same result is yielded iff a `+` is inserted between both
+pattern targets:
+
+    $ ./somake -m serial both
+    echo x > foo.bar
+    sed 's/x/y/' foo.bar > foo.one
+    sed 's/x/z/' foo.bar > foo.two
+
+The example makefile also contains an example for Sun make style conditional
+macro assignments (with `:=`):
+
+    $ ./somake -m serial warn-helloworld
+    cc -Wall   -o helloworld helloworld.c
+
+The combination with command dependencies makes this feature even more useful:
+
+    $ ./somake -m serial warn-helloworld
+    cc -Wall   -o helloworld helloworld.c
+    $ ./somake -m serial helloworld
+    cc    -o helloworld helloworld.c
+    $ ./somake -m serial warn-helloworld
+    cc -Wall   -o helloworld helloworld.c
+
+In contrast, GNU make doesn't rebuild `helloworld` because it doesn't
+consider changed variables.
 
 ## Background
 
@@ -58,7 +206,7 @@ Illumos started with the code base that included the original Sun
 make but later switched to dmake.
 
 
-## Related make Implementations
+## Comparison with other make Implementations
 
 [GNU make][gmake] is the most popular, portable and thus relevant
 make. Similar to most GNU tools it contains many very useful
@@ -96,7 +244,15 @@ different syntax. For example, conditional macros:
 (Note that GNU make interprets `:=` as assignment with immediate
 expansion.)
 
-The distributed make that came with OpenOffice is [also named
+As always, neither GNU make nor Sun make/dmake are bug-free.  For
+example, in versions released before 2016, the `include` file
+generation in GNU make prints misleading messages (cf. e.g. bug
+102). Sun make's `.make.state` file (that is used for hidden
+dependency and command dependency tracking) sometimes causes more
+harm than good - e.g. when outdated dependencies aren't removed
+(e.g. when one converts a target group into a target list).
+
+The distributed make that comes with OpenOffice is [also named
 DMake][oodmake]. It seems that it was independently developed of Sun's
 dmake - and that it uses a different syntax.
 
@@ -124,6 +280,24 @@ the [Schily smake][smake].
 
 Thus, to not add to the confusion I chose `somake`.
 
+
+## Installation
+
+Basically it is just:
+
+- copy the created `somake` binary to a `bin/` directory under some prefix
+- copy the man page into the related manpath
+- copy the rule files that contain the built-in rules and are located
+  in the `bin/` subdirectory of this repository to one of the directories
+  searched by `somake` (and also remove the `.file` suffix)
+
+The `somake` search path is (when `make.rules` is used):
+
+1. `make.rules`
+2. `$ORIGIN/../share/lib/make/make.rules`
+3. `$ORIGIN/../../share/make.rules`
+4. `/usr/share/lib/make/make.rules`
+5. `/etc/default/make.rules`
 
 ## License
 
