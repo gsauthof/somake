@@ -25,6 +25,7 @@ add_executable(somake
   bin/main.cc     bin/misc.cc    bin/nse_printdep.cc bin/parallel.cc
   bin/pmake.cc    bin/read.cc    bin/read2.cc        bin/rep.cc
   bin/state.cc
+  comp/progname.c
 )
 
 set_property(TARGET somake mksh vroot PROPERTY INCLUDE_DIRECTORIES
