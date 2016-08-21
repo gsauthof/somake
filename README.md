@@ -17,6 +17,23 @@ command and hidden dependencies.
 2016, Georg Sauthofff <mail@georg.so>
 
 
+## Build Instructions
+
+    git clone https://github.com/gsauthof/somake.git
+    mkdir somake-build
+    cd somake-build
+    cmake ../somake -DCMAKE_BUILD_TYPE=Release
+    make
+
+Or to use Ninja instead of GNU Make:
+
+    git clone https://github.com/gsauthof/somake.git
+    mkdir somake-build
+    cd somake-build
+    cmake ../somake -DCMAKE_BUILD_TYPE=Release -G Ninja
+    ninja-build
+
+
 ## Background
 
 Illumos is based on [OpenSolaris][osolaris], the now discontinued
