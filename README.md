@@ -184,7 +184,7 @@ consider changed variables.
 
 ## Background
 
-Illumos is based on [OpenSolaris][osolaris], the now discontinued
+[Illumos][illumos] is based on [OpenSolaris][osolaris], the now discontinued
 open-source version of Solaris. OpenSolaris was started by Sun
 after the Solaris 10 release and was closed down in 2010 after
 Oracle bought Sun.  Sun used the [CDDL][cddl] license on its open
@@ -221,7 +221,6 @@ Examples of GNU make features that are missing from Sun make:
 - user-defined functions
 - templates
 - guile integration
-- generation of included files
 
 Sun make features that aren't supported by GNU make:
 
@@ -235,7 +234,7 @@ Sun make features that aren't supported by GNU make:
 - hidden dependencies - automatic discovery of header
   dependencies
 
-There are also extension where GNU and Sun make just use
+There are also features where GNU and Sun make just use
 different syntax. For example, conditional macros:
 
 - Sun make: `target := VAR = value`
