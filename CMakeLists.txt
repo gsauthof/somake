@@ -19,7 +19,7 @@ add_library(vroot STATIC
   lib/vroot/unlink.cc
 )
 
-add_executable(somake
+add_executable(${PROJECT_NAME}
   bin/ar.cc       bin/depvar.cc  bin/doname.cc       bin/dosys.cc
   bin/files.cc    bin/globals.cc bin/implicit.cc     bin/macro.cc
   bin/main.cc     bin/misc.cc    bin/nse_printdep.cc bin/parallel.cc
@@ -28,12 +28,22 @@ add_executable(somake
   comp/progname.c
 )
 
-set_property(TARGET somake mksh vroot PROPERTY INCLUDE_DIRECTORIES
+set_property(TARGET ${PROJECT_NAME} mksh vroot PROPERTY INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(somake
+target_link_libraries(${PROJECT_NAME}
   mksh vroot pthread
 )
 
+install(TARGETS   ${PROJECT_NAME}  RUNTIME DESTINATION bin)
+install(FILES     man/man1/make.1          DESTINATION share/man/man1)
+install(FILES     bin/make.rules.file      DESTINATION share/${PROJECT_NAME}
+        RENAME        make.rules)
+install(FILES     bin/svr4.make.rules.file DESTINATION share/${PROJECT_NAME}
+        RENAME        svr4.make.rules)
+install(FILES     README.md                DESTINATION share/doc/${PROJECT_NAME}
+)
+install(DIRECTORY example                  DESTINATION share/doc/${PROJECT_NAME}
+)

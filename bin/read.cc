@@ -143,6 +143,11 @@ read_simple_file(register Name makefile_name, register Boolean chase_path, regis
 						-1);
 
 				// As regularly installed
+				asprintf(&path, "%s/../share/somake", pfx);
+				add_dir_to_path(path, &makefile_path, -1);
+				free(path);
+
+				// As regularly installed
 				asprintf(&path, "%s/../share/lib/make", pfx);
 				add_dir_to_path(path, &makefile_path, -1);
 				free(path);

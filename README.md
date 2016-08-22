@@ -282,7 +282,34 @@ Thus, to not add to the confusion I chose `somake`.
 
 ## Installation
 
-Basically it is just:
+The build file also contains an install target, e.g.:
+
+    $ DESTDIR=dest ninja-build install
+    [1/1] Install the project...
+    -- Install configuration: "Release"
+    -- Installing: dest/usr/local/bin/somake
+    [..]
+
+If you use the standard makefile generator with cmake, just
+replace `ninja-build` with `make`. Also, omitting the `DESTDIR`
+installs everything for real. The destdir mechanism is useful for
+preparing a binary package and just to have a preview.
+
+To change the default install prefix, you have to call `cmake`
+differently, e.g.:
+
+    $ cmake ../somake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release -G Ninja
+    $ DESTDIR=dest ninja-build install
+    [..]
+    -- Install configuration: "Release"
+    -- Installing: dest/usr/bin/somake
+    [..]
+
+
+### Manual Installation
+
+In case you prefer a manual installation, basically it is just:
 
 - copy the created `somake` binary to a `bin/` directory under some prefix
 - copy the man page into the related manpath
@@ -290,13 +317,17 @@ Basically it is just:
   in the `bin/` subdirectory of this repository to one of the directories
   searched by `somake` (and also remove the `.file` suffix)
 
-The `somake` search path is (when `make.rules` is used):
+### Rule Search Path
+
+Using `make.rules` as an example, `somake` tries to open it in
+the following order:
 
 1. `make.rules`
-2. `$ORIGIN/../share/lib/make/make.rules`
-3. `$ORIGIN/../../share/make.rules`
-4. `/usr/share/lib/make/make.rules`
-5. `/etc/default/make.rules`
+2. `$ORIGIN/../share/somake/make.rules`   # added by this port
+3. `$ORIGIN/../share/lib/make/make.rules`
+4. `$ORIGIN/../../share/make.rules`
+5. `/usr/share/lib/make/make.rules`
+6. `/etc/default/make.rules`
 
 ## License
 
