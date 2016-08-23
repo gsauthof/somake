@@ -272,28 +272,28 @@ void
 enable_interrupt(register void (*handler) (int))
 {
 	if (sigivalue != SIG_IGN) {
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 		(void) bsd_signal(SIGINT, (SIG_PF) handler);
 #else
 		(void) bsd_signal(SIGINT, handler);
 #endif
 	}
 	if (sigqvalue != SIG_IGN) {
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 		(void) bsd_signal(SIGQUIT, (SIG_PF) handler);
 #else
 		(void) bsd_signal(SIGQUIT, handler);
 #endif
 	}
 	if (sigtvalue != SIG_IGN) {
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 		(void) bsd_signal(SIGTERM, (SIG_PF) handler);
 #else
 		(void) bsd_signal(SIGTERM, handler);
 #endif
 	}
 	if (sighvalue != SIG_IGN) {
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 		(void) bsd_signal(SIGHUP, (SIG_PF) handler);
 #else
 		(void) bsd_signal(SIGHUP, handler);

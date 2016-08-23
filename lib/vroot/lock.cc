@@ -36,7 +36,7 @@
 #include <errno.h>			/* errno */
 #include <libintl.h>
 
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 extern	char		*sys_errlist[];
 extern	int		sys_nerr;
 #endif

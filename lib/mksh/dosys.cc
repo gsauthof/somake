@@ -93,7 +93,7 @@ redirect_io(char *stdout_file, char *stderr_file)
 {
 	int	i;
 
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 	(void) closefrom(3);
 #else
         // XXX not available on Linux

@@ -2,7 +2,7 @@
 #ifndef COMP_TIMESTRUC_T_H
 #define COMP_TIMESTRUC_T_H
 
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 #else
 typedef struct timespec timestruc_t;
 #endif

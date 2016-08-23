@@ -32,7 +32,7 @@
 
 #include <signal.h>
 
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 
 #ifndef __cplusplus
 typedef void (*SIG_PF) (int);

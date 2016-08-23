@@ -43,7 +43,7 @@
 #include <poll.h>
 #include <libintl.h>
 #include <signal.h>
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 // XXX really needed, even on Solaris?
 #include <stropts.h>
 #else

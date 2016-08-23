@@ -50,7 +50,7 @@
 #include <fcntl.h>		/* open() */
 #include <ctype.h>
 
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 #	include <sys/systeminfo.h>	/* sysinfo() */
 #else
 #include <sys/sysinfo.h>
@@ -206,7 +206,7 @@ main(int argc, char *argv[])
 
 	struct stat		out_stat, err_stat;
 	hostid = gethostid();
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 	bsd_signals();
 #else
 // XXX necessary on linux?
@@ -488,7 +488,7 @@ main(int argc, char *argv[])
 /*
  *	Enable interrupt handler for alarms
  */
-#if defined(sun) || defined(__sun)
+#ifdef __sun
         (void) bsd_signal(SIGALRM, (SIG_PF)doalarm);
 #else
         (void) bsd_signal(SIGALRM, doalarm);
@@ -926,7 +926,7 @@ read_command_options(register int argc, register char **argv)
 // between Solaris and GNU libc.
 // Also, the '+' is probably a good idea for GNU libc to avoid
 // reording of arguments.
-#if defined(sun) || defined(__sun)
+#ifdef __sun
 #define SUNPRO_CMD_OPTS	"-~Bbc:Ddef:g:ij:K:kM:m:NnO:o:PpqRrSsTtuVvwx:"
 #define SVR4_CMD_OPTS   "-c:ef:g:ij:km:nO:o:pqrsTtVv"
 #else
@@ -1623,7 +1623,7 @@ make_install_prefix(void)
 	char *dir;
 
 	if ((ret = readlink(
-#if defined(sun) || defined(__sun)
+#ifdef __sun
             "/proc/self/path/a.out",
 #else
             "/proc/self/exe",
