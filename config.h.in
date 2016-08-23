@@ -1,0 +1,7 @@
+// 2016, Georg Sauthoff <mail@georg.so>, CDDL and WTFPL
+#ifndef SOMAKE_CONFIG_H
+#define SOMAKE_CONFIG_H
+
+#cmakedefine HAVE_WCSDUP 1
+
+#endif

@@ -1,7 +1,11 @@
 # 2016, Georg Sauthoff <mail@georg.so>
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project(somake C CXX)
+
+include(CheckFunctionExists)
+check_function_exists(wcsdup HAVE_WCSDUP)
+configure_file(config.h.in config.h)
 
 add_library(mksh STATIC
   lib/mksh/dosys.cc lib/mksh/globals.cc lib/mksh/i18n.cc lib/mksh/macro.cc
@@ -25,12 +29,14 @@ add_executable(${PROJECT_NAME}
   bin/main.cc     bin/misc.cc    bin/nse_printdep.cc bin/parallel.cc
   bin/pmake.cc    bin/read.cc    bin/read2.cc        bin/rep.cc
   bin/state.cc
-  comp/progname.c
+  lib/bsd/bsd.cc
+  comp/progname.c comp/wcsdup.c
 )
 
 set_property(TARGET ${PROJECT_NAME} mksh vroot PROPERTY INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}

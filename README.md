@@ -267,6 +267,11 @@ Although those changes target Linux, they aren't really Linux
 specific. That means that the ported make should also compile on
 other modern [POSIXy][posix] operating systems.
 
+So far, the port was successfully tested under:
+
+- Fedora 23/x86-64
+- Solaris 10/SPARC
+
 
 ## Naming
 
@@ -306,6 +311,14 @@ differently, e.g.:
     -- Installing: dest/usr/bin/somake
     [..]
 
+### Tweaks
+
+If you are compiling on a legacy platform with ancient libraries
+you may need to tweak the cmake call a little bit. For example,
+to compile with GCC on a Solaris 10 system:
+
+    $ CC=gcc CXX=g++ LDFLAGS='-lnsl /opt/csw/lib/libintl.so.8' \
+        cmake -DCMAKE_BUILD_TYPE=Release ../somake
 
 ### Manual Installation
 
@@ -328,6 +341,7 @@ the following order:
 4. `$ORIGIN/../../share/make.rules`
 5. `/usr/share/lib/make/make.rules`
 6. `/etc/default/make.rules`
+
 
 ## License
 
