@@ -43,13 +43,38 @@ target_link_libraries(${PROJECT_NAME}
   mksh vroot pthread
 )
 
+# default install prefix is /usr/local
+# change it with e.g. -DCMAKE_INSTALL_PREFIX=/usr
 install(TARGETS   ${PROJECT_NAME}  RUNTIME DESTINATION bin)
 install(FILES     man/man1/make.1          DESTINATION share/man/man1)
 install(FILES     bin/make.rules.file      DESTINATION share/${PROJECT_NAME}
         RENAME        make.rules)
 install(FILES     bin/svr4.make.rules.file DESTINATION share/${PROJECT_NAME}
         RENAME        svr4.make.rules)
-install(FILES     README.md                DESTINATION share/doc/${PROJECT_NAME}
+install(FILES     COPYING
+                  README.md
+                                           DESTINATION share/doc/${PROJECT_NAME}
 )
 install(DIRECTORY example                  DESTINATION share/doc/${PROJECT_NAME}
 )
+
+# select the package generator with e.g. -DCPACK_GENERATOR='RPM;DEB'
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "illumos dmake, Sun make compatible")
+set(CPACK_PACKAGE_CONTACT "mail@georg.so")
+set(CPACK_PACKAGE_VENDOR "misc")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README_pkg.txt")
+set(CPACK_RPM_PACKAGE_LICENSE "CDDL")
+# used by some generators like NSI, is only displayed in the installer
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+# only used by some generators
+set(CPACK_PACKAGE_INSTALL_DIRECTORY
+    "${PROJECT_NAME}-${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_MAJOR "0")
+set(CPACK_PACKAGE_VERSION_MINOR "6")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_RPM_PACKAGE_GROUP "Development/Tools")
+set(CPACK_RPM_PACKAGE_URL "https://github.com/gsauthof/somake")
+# CPackDeb default to CPACK_PACKAGE_DESCRIPTION_SUMMARY, although
+# the long description makes more sense ...
+file(READ ${CPACK_PACKAGE_DESCRIPTION_FILE} CPACK_DEBIAN_PACKAGE_DESCRIPTION)
+include(CPack)

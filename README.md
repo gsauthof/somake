@@ -342,6 +342,32 @@ the following order:
 5. `/usr/share/lib/make/make.rules`
 6. `/etc/default/make.rules`
 
+## Packaging
+
+The CMake build file `CMakeLists.txt` also defines some variables
+for CPack, the CMake companion tool for creating binary packages.
+
+For example, to create `.rpm` and `.deb` packages:
+
+    $ cmake ../somake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCPACK_GENERATOR='RPM;DEB' -GNinja
+    $ ninja-build package
+    $  ls somake-*
+    somake-0.6.0-Linux.deb  somake-0.6.0-Linux.rpm
+
+As always, the `-GNinja` generator option can be dropped -
+`ninja-build` has to be replaced with `make` then.
+
+The content of the archives can be verified like this:
+
+    $ dpkg --contents somake-0.6.0-Linux.deb
+    $ dpkg --info somake-0.6.0-Linux.deb
+
+Or:
+
+    $ rpm2cpio somake-0.6.0-Linux.rpm | cpio --list -v
+    $ rpm -qip somake-0.6.0-Linux.rpm
+
 
 ## License
 
