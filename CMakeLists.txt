@@ -20,8 +20,8 @@ configure_file(config.h.in config.h)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
   find_library(NSL_LIB NAMES nsl)
-  # prefer the OpenCSW libintl over the one from /usr/lib/64
-  find_library(INTL_LIB NAMES intl HINTS /opt/csw/lib/64)
+  # prefer the OpenCSW libintl over the one from /usr/lib
+  find_library(INTL_LIB NAMES intl HINTS /opt/csw/lib)
 endif()
 
 add_library(mksh STATIC
