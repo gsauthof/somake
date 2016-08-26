@@ -37,8 +37,10 @@
 #include <libintl.h>
 
 #ifdef __sun
+#if !defined(_LP64)
 extern	char		*sys_errlist[];
 extern	int		sys_nerr;
+#endif
 #endif
 
 static	void		file_lock_error(char *msg, char *file, char *str, const char *arg1, const char *arg2);
@@ -167,11 +169,15 @@ file_lock_error(char *msg, char *file, char *str, const char *arg1, const char *
 	len = strlen(msg);
 	sprintf(&msg[len], str, arg1, arg2);
 	strcat(msg, gettext(" failed - "));
+#if defined(_LP64)
+        strcat(msg, strerror(errno));
+#else
 	if (errno < sys_nerr) {
 		strcat(msg, strerror(errno));
 	} else {
 		len = strlen(msg);
 		sprintf(&msg[len], "errno %d", errno);
 	}
+#endif
 }
 

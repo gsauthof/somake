@@ -364,7 +364,9 @@ setup_char_semantics(void)
 char *
 errmsg(int errnum)
 {
-
+#if defined(_LP64)
+    return strerror(errnum);
+#else
 	extern int		sys_nerr;
 	char			*errbuf;
 
@@ -376,6 +378,7 @@ errmsg(int errnum)
 		return strerror(errnum);
 
 	}
+#endif
 }
 
 static char static_buf[MAXPATHLEN*3];
