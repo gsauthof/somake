@@ -18,6 +18,12 @@ endif()
 
 configure_file(config.h.in config.h)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
+  find_library(NSL_LIB NAMES nsl)
+  # prefer the OpenCSW libintl over the one from /usr/lib/64
+  find_library(INTL_LIB NAMES intl HINTS /opt/csw/lib/64)
+endif()
+
 add_library(mksh STATIC
   lib/mksh/dosys.cc lib/mksh/globals.cc lib/mksh/i18n.cc lib/mksh/macro.cc
   lib/mksh/misc.cc  lib/mksh/mksh.cc    lib/mksh/read.cc
@@ -52,7 +58,7 @@ set_property(TARGET ${PROJECT_NAME} mksh vroot PROPERTY INCLUDE_DIRECTORIES
 )
 
 target_link_libraries(${PROJECT_NAME}
-  mksh vroot pthread ${BSD_LIBRARIES}
+  mksh vroot pthread ${BSD_LIBRARIES} ${NSL_LIB} ${INTL_LIB}
 )
 
 # default install prefix is /usr/local
