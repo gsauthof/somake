@@ -5,6 +5,17 @@ project(somake C CXX)
 
 include(CheckFunctionExists)
 check_function_exists(wcsdup HAVE_WCSDUP)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  find_package(PkgConfig)
+  pkg_search_module(BSD libbsd)
+  if (BSD_LIBRARIES)
+    set(HAVE_CLOSEFROM 1)
+  endif()
+else()
+  check_function_exists(closefrom HAVE_CLOSEFROM)
+endif()
+
 configure_file(config.h.in config.h)
 
 add_library(mksh STATIC
@@ -37,10 +48,11 @@ set_property(TARGET ${PROJECT_NAME} mksh vroot PROPERTY INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${BSD_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  mksh vroot pthread
+  mksh vroot pthread ${BSD_LIBRARIES}
 )
 
 # default install prefix is /usr/local
