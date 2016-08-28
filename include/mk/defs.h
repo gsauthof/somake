@@ -353,16 +353,6 @@ extern  void		gather_recursive_deps(void);
 extern	char		*get_current_path(void);
 extern	int		get_job_msg_id(void);
 extern	wchar_t		*getmem_wc(register int size);
-/* On linux getwd(char *) is defined in 'unistd.h' */
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef __sun
-extern	char		*getwd(char *);
-#endif
-#ifdef __cplusplus
-}
-#endif
 extern	void		handle_interrupt(int);
 extern	Boolean		is_running(Name target);
 extern	void		load_cached_names(void);
