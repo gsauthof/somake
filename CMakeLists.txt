@@ -64,7 +64,8 @@ target_link_libraries(${PROJECT_NAME}
 # default install prefix is /usr/local
 # change it with e.g. -DCMAKE_INSTALL_PREFIX=/usr
 install(TARGETS   ${PROJECT_NAME}  RUNTIME DESTINATION bin)
-install(FILES     man/man1/make.1          DESTINATION share/man/man1)
+install(FILES     man/man1/make.1          DESTINATION share/man/man1
+        RENAME  ${PROJECT_NAME}.1)
 install(FILES     bin/make.rules.file      DESTINATION share/${PROJECT_NAME}
         RENAME        make.rules)
 install(FILES     bin/svr4.make.rules.file DESTINATION share/${PROJECT_NAME}
