@@ -100,4 +100,15 @@ hello:
 #
 #    This is a bug. 
 #
+#    Possible fix:
+#      i) Just don't use the make.state database before it is loaded.
+#         This effectively would disable command dependencies for
+#         generated include files. Similar effect as the described
+#         workaround.
+#     ii) or, preferably, load the make.state file before any
+#         processing of include directives. This would have
+#         the advantage that an include file is regenerated if a
+#         variable that is used in the generate action has
+#         changed (think: `generate.sh $(CC) $(LD) > tool_dependent.mf`
+
 
