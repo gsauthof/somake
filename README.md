@@ -249,7 +249,8 @@ generation in GNU make prints misleading messages (cf. e.g. bug
 102). Sun make's `.make.state` file (that is used for hidden
 dependency and command dependency tracking) sometimes causes more
 harm than good - e.g. when outdated dependencies aren't removed
-(e.g. when one converts a target group into a target list).
+(e.g. when one converts a target group into a target list). Or when
+include files are regenerated unconditionally (cf. `test/empty_cmd.mf`).
 
 The distributed make that comes with OpenOffice is [also named
 DMake][oodmake]. It seems that it was independently developed of Sun's

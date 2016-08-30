@@ -1,0 +1,103 @@
+# (A)
+.KEEP_STATE:
+
+all: hello
+
+clean:
+	rm foo.x foo.y
+
+foo.x:
+	touch foo.x
+
+# <- workaround: disable command dependencies
+#	?touch foo.x
+
+foo.y: foo.x
+	cat foo.x foo.x > foo.y
+
+# <- workaround: disable command dependencies
+#	?cat foo.x foo.x > foo.y
+
+# (B)
+include foo.y
+
+
+hello:
+	echo hello
+
+# The perhaps unintuitive effect of `.KEEP_STATE`
+# on the generation of include files.
+#
+# Effects:
+#
+# 1) comment out the line after (A)
+#
+#     $ somake -f empty_cmd.mf clean
+#     rm foo.x foo.y
+#     $ rm .make.state
+#     $ somake -f empty_cmd.mf      
+#     touch foo.x
+#     cat foo.x foo.x > foo.y
+#     echo hello
+#     hello
+#     $ somake -f empty_cmd.mf 
+#     echo hello
+#     hello
+#
+# -> meaning that the include file foo.y is only updated
+#    if it doesn't exist or foo.x is newer. This is
+#    the expected behavior.
+#
+# 2) comment in (A) and comment out (B)
+#
+#     $ somake -f empty_cmd.mf clean
+#     rm foo.x foo.y
+#     $ rm .make.state
+#     $ somake -f empty_cmd.mf foo.y
+#     touch foo.x
+#     cat foo.x foo.x > foo.y
+#     $ somake -f empty_cmd.mf foo.y
+#     `foo.y' is up to date.
+#
+# -> again, as expected the foo.y action is only executed once.
+#
+# 3) comment in (A) and (B)
+#
+#     $ somake -f empty_cmd.mf clean
+#     touch foo.x
+#     cat foo.x foo.x > foo.y
+#     rm foo.x foo.y
+#     $ rm .make.state
+#     $ somake -f empty_cmd.mf      
+#     touch foo.x
+#     cat foo.x foo.x > foo.y
+#     echo hello
+#     hello
+#     $ somake -f empty_cmd.mf 
+#     touch foo.x
+#     cat foo.x foo.x > foo.y
+#     echo hello
+#     hello
+#
+# -> this is unexpected because foo.y is generated each time.
+#    This is caused by an interaction between KEEP_STATE and
+#    include. Make reads in the `.make.state` file after
+#    include directives are being processed. But, as part of the
+#    dependency checking of the include files the usual KEEP_STATE
+#    logic is applied such that make assumes that the foo.y action
+#    command changed from '' (empty) to 'cat foo.x foo.x > foo.y'.
+#
+#    (make basically looks up the 'old' command in an empty database)
+#
+#    When calling make with `-d` the log contains messages like:
+#
+#        different from empty old command
+#        Building foo.x because new command longer than old
+#        Building foo.y because new command longer than old
+#
+#    A workaround is to disable command dependencies for the involved
+#    actions, i.e. `?touch foo` and `?cat foo.x foo.x > foo.y`
+#
+#    This is a bug. 
+#
+
