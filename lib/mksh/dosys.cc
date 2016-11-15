@@ -51,14 +51,15 @@
 #include <sys/wait.h>		/* wait() */
 #include <ulimit.h>		/* ulimit() */
 #include <unistd.h>		/* close(), dup2() */
-// closefrom only available on Solaris/BSD
+// closefrom only available on Solaris/BSD via system header
 #include <stdlib.h>		/* closefrom() */
-#ifdef __linux
-  #include <bsd/unistd.h>
-#endif
 #include <libintl.h>
 
 #include <config.h>
+
+#if defined(__linux) && defined(HAVE_CLOSEFROM)
+  #include <bsd/unistd.h>
+#endif
 
 /*
  * typedefs & structs
