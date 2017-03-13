@@ -93,6 +93,8 @@ set(CPACK_PACKAGE_VERSION_MINOR "6")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_RPM_PACKAGE_GROUP "Development/Tools")
 set(CPACK_RPM_PACKAGE_URL "https://github.com/gsauthof/somake")
+set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION
+  "/usr/share/man" "/usr/share/man/man1")
 # CPackDeb default to CPACK_PACKAGE_DESCRIPTION_SUMMARY, although
 # the long description makes more sense ...
 file(READ ${CPACK_PACKAGE_DESCRIPTION_FILE} CPACK_DEBIAN_PACKAGE_DESCRIPTION)
