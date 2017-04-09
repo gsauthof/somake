@@ -1,3 +1,5 @@
+[![Open Build Service](https://img.shields.io/badge/OBS-.deb%20.rpm-green.svg)][obs]
+
 This repository contains the [Illumos][illumos] make source code (in branch
 `illumos`) and based on that a port to Linux (branch `master`).
 
@@ -369,6 +371,10 @@ Or:
     $ rpm2cpio somake-0.6.0-Linux.rpm | cpio --list -v
     $ rpm -qip somake-0.6.0-Linux.rpm
 
+### Open Build Service
+
+There is also an [Open Build Service Repository][obs] that provides
+somake binary packages for several distributions.
 
 ## License
 
@@ -389,4 +395,5 @@ also under the [CDDL][cddl].
 [smake]: https://sourceforge.net/projects/s-make/
 [imake]: https://en.wikipedia.org/wiki/Imake
 [dmake]: https://docs.oracle.com/cd/E24457_01/html/E25220/index.html
+[obs]: https://build.opensuse.org/package/show/home:gsauthof/somake
 
